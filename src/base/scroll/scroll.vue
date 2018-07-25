@@ -24,6 +24,10 @@ export default {
     data: {
       type: Array,
       default: null
+    },
+    lisenScroll: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -45,6 +49,12 @@ export default {
         probeType: this.probeType,
         click: this.click
       })
+      if (this.lisenScroll) {
+        let vm = this
+        this.scroll.on('scroll', (pos) => {
+          vm.$emit('scroll', pos)
+        })
+      }
     },
     enable() {
       this.scroll && this.scroll.enable() // 默认开启
@@ -54,6 +64,12 @@ export default {
     },
     refresh() {
       this.scroll && this.scroll.refresh() // 当 DOM 结构发生变化的时候务必要调用确保滚动的效果正常
+    },
+    scrollTo() {
+      this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments)
+    },
+    scrollToElement() {
+      this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments)
     }
   },
   watch: {
