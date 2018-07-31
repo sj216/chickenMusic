@@ -25,14 +25,22 @@
             :data-index="index">{{item}}</li>
       </ul>
     </div>
+    <div class="list-fixed" v-show="fixedTitle" ref="fixed">
+      <h1 class="fixed-title">{{fixedTitle}}</h1>
+    </div>
+    <div v-show="!data.length" class="loading-container">
+      <loading/>
+    </div>
   </scroll>
 </template>
 
 <script>
 import Scroll from '../scroll/scroll'
 import {getData} from '../../common/js/dom'
+import Loading from '../loading/loading'
 
 const ANCHOR_HEIGHT = 18
+const TITLE_HEIGHT = 30
 
 export default {
   name: 'listview',
@@ -48,7 +56,8 @@ export default {
     return {
       scrollY: -1,
       currentIndex: 0,
-      probeType: 3
+      probeType: 3,
+      diff: -1 // 表示滚动到一个上限和滚动位置的一个滚动差
     }
   },
   created() {
@@ -61,6 +70,12 @@ export default {
       return this.data.map((group) => {
         return group.title.substr(0, 1)
       })
+    },
+    fixedTitle() {
+      if (this.scrollY > 0) {
+        return ''
+      }
+      return this.data[this.currentIndex] ? this.data[this.currentIndex].title : ''
     }
   },
   watch: {
@@ -69,6 +84,7 @@ export default {
         this._calculateHeight()
       }, 20)
     },
+    // 实时监控scrollY的位置变化来判断右侧字母导航的高亮显示
     scrollY(newY) {
       const listHeight = this.listHeight
       // 当滚动到顶部 newY > 0
@@ -82,16 +98,26 @@ export default {
         let height2 = listHeight[i + 1]
         if (-newY >= height1 && -newY < height2) {
           this.currentIndex = i
+          this.diff = height2 + newY
           return
         }
         this.currentIndex = 0
       }
       // 当滚动到底部且-newY大于最后一个元素的上限，listHeight的元素多一个，length比index多1
       this.currentIndex = listHeight.length - 2
+    },
+    diff (newVal) { // 差值大于0 插值小于元素高度时
+      let fixedTop = (newVal > 0 && newVal < TITLE_HEIGHT) ? newVal - TITLE_HEIGHT : 0
+      if (this.fixedTop === fixedTop) {
+        return
+      }
+      this.fixedTop = fixedTop
+      this.$refs.fixed.style.transform = `translate3d(0,${fixedTop}px,0)` // 单位别忘记
     }
   },
   components: {
-    Scroll
+    Scroll,
+    Loading
   },
   methods: {
     onShortcutTouchStart(el) {
@@ -109,9 +135,18 @@ export default {
       this._scrollTo(achorIndex)
     },
     scroll(pos) {
+      // 实现实时监控scrollY的位置
       this.scrollY = pos.y
     },
     _scrollTo(index) {
+      if (!index && index !== 0) {
+        return
+      }
+      if (index < 0) {
+        index = 0
+      } else if (index > this.listHeight.length - 2) {
+        index = this.listHeight.length - 2
+      }
       this.scrollY = -this.listHeight[index]
       this.$refs.listview.scrollToElement(this.$refs.listGroup[index], 0) // 第二个参数是缓动的动画时间
     },
