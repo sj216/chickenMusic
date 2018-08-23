@@ -6,6 +6,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import VueLazyLoad from 'vue-lazyload'
+import store from './store'
 
 import '@/common/stylus/index.styl'
 
@@ -21,6 +22,7 @@ Vue.use(VueLazyLoad, {
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })
