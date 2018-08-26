@@ -5,7 +5,7 @@
     </div>
     <h1 class="title" v-html="title"></h1>
     <div class="bg-image" :style="bgStyle" ref="bgImage">
-      <div class="filter"></div>
+      <div class="filter" ref="filter"></div>
     </div>
     <div class="bg-layer" ref="layer"></div>
     <scroll
@@ -72,10 +72,36 @@ export default {
     // 通过监听scrollY的值的变化来给layer进行赋值
     scrollY(newY) {
       let translateY = Math.max(this.minTranslateY, newY)
+      // 设置一个变量 实现滚动到顶部的时候不文字遮住，不显示出来
+      let zIndex = 0
+      // 实现跟随滚动，背景图的缩小放大功能
+      let scale = 1
+      // 下拉过程中有一个模糊的效果
+      let blur = 0
       this.$refs.layer.style['transform'] = `translate3d(0,${translateY}px,0)`
       this.$refs.layer.style['webkitTransform'] = `translate3d(0,${translateY}px,0)` // 设置浏览器
       // bglayer的高度是100%，就是屏幕的高度
       // 我们需要做限制让bglayer不是无限制的永远滚动，而是滚动到一定高度之后就不滚动了，因此需要设置最大的滚动距离
+      const percent = Math.abs(newY / this.imageHeight)
+      if (newY > 0) {
+        scale = 1 + percent
+        zIndex = 10
+      } else {
+        blur = Math.min(20 * percent, 20) // 向上滑动的时候有高斯模糊的效果
+      }
+      this.$refs.filter.style['backdrop-filter'] = `blur(${blur})` // 这个属性只有ios能看到
+      this.$refs.filter.style['webkitBackdrop-filter'] = `blur(${blur})` // 这个属性只有ios能看到
+      if (newY < this.minTranslateY) {
+        zIndex = 10
+        this.$refs.bgImage.style.paddingTop = 0
+        this.$refs.bgImage.style.height = `${RESERVED_HEIGHT}px`
+      } else {
+        this.$refs.bgImage.style.paddingTop = '70%'
+        this.$refs.bgImage.style.height = 0
+      }
+      this.$refs.bgImage.style.zIndex = zIndex
+      this.$refs.bgImage.style['transform'] = `scale(${scale})`
+      this.$refs.bgImage.style['webkitTransform'] = `scale(${scale})` // 设置浏览器
     }
   },
   computed: {
