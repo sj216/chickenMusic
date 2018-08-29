@@ -24,6 +24,7 @@
       <div class="song-list-wrapper">
         <song-list
           :songs="songs"
+          @select="selectItem"
         />
       </div>
       <div class="loading-container" v-show="!songs.length">
@@ -38,6 +39,7 @@ import Scroll from '@/base/scroll/scroll'
 import SongList from '@/base/song-list/song-list'
 import Loading from '@/base/loading/loading'
 import { prefixStyle } from '../../common/js/dom'
+import { mapActions } from 'vuex'
 
 const RESERVED_HEIGHT = 40
 
@@ -124,11 +126,21 @@ export default {
     }
   },
   methods: {
+    ...mapActions([
+      'selectPlay'
+    ]),
     scroll(pos) {
       this.scrollY = pos.y // 实时拿到scrollY的值
     },
     back() {
       this.$router.back()
+    },
+    selectItem(item, index) {
+      // 设置当前的playList,currentList,playstate,fullScreen
+      this.selectPlay({
+        list: this.songs,
+        index
+      })
     }
   }
 }
