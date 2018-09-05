@@ -28,6 +28,13 @@
           </div>
         </div>
         <div class="bottom">
+          <div class="progress-wrapper">
+            <span class="time time-l">{{format(currentTime)}}</span>
+            <div class="progress-bar-wrapper">
+              <progress-bar :percent="percent"></progress-bar>
+            </div>
+            <div class="time time-r">{{format(currentSong.duration)}}</div>
+          </div>
           <div class="operators">
             <div class="icon i-left">
               <i class="icon-sequence"></i>
@@ -74,6 +81,7 @@
     <audio :src="currentSong.url"
            @canplay="ready"
            @error="error"
+           @timeupdate="updateTime"
            ref="audio"></audio>
   </div>
 </template>
@@ -82,6 +90,7 @@
 import { mapGetters, mapMutations } from 'vuex'
 import animations from 'create-keyframe-animation'
 import {prefixStyle} from '@/common/js/dom'
+import progressBar from '@/base/progress-bar/progress-bar.vue'
 
 const transform = prefixStyle('transform')
 
@@ -89,10 +98,17 @@ export default {
   name: 'player',
   data() {
     return {
-      songReady: false
+      songReady: false,
+      currentTime: 0
     }
   },
+  components: {
+    progressBar
+  },
   computed: {
+    percent() {
+      return this.currentTime / this.currentSong.duration
+    },
     cdCls() {
       return this.playing ? 'play' : 'play pause'
     },
@@ -215,6 +231,25 @@ export default {
     },
     error() {
       this.songReady = false
+    },
+    updateTime(e) {
+      this.currentTime = e.target.currentTime // 正在播放的当前时间
+    },
+    // 时间戳转换为时间的函数
+    format(interval) {
+      interval = interval | 0 // 一个整数的向下取整
+      const minute = interval / 60 | 0 // 获得分的部分
+      const second = interval % 60 | 0 // 获取秒的部分
+      return `${minute}:${this._pad(second)}`
+    },
+    // 时间补零函数
+    _pad(num, n = 2) { // n代表需要补的字符串的长度
+      let len = num.toString().length
+      while (len < n) {
+        num = '0' + num
+        len++
+      }
+      return num
     }
   },
   watch: {
