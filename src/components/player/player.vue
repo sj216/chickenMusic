@@ -72,7 +72,11 @@
         </div>
         <!-- 播放按钮 -->
         <div class="control">
-          <i :class="miniIcon" @click.stop="togglePlaying"></i>
+          <progress-circle
+            :radius="radius"
+            :percent="percent">
+            <i :class="miniIcon" class="icon-mini" @click.stop="togglePlaying"></i>
+          </progress-circle>
         </div>
         <!-- 点开歌曲列表按钮 -->
         <div class="control">
@@ -93,6 +97,7 @@ import { mapGetters, mapMutations } from 'vuex'
 import animations from 'create-keyframe-animation'
 import {prefixStyle} from '@/common/js/dom'
 import progressBar from '@/base/progress-bar/progress-bar.vue'
+import progressCircle from '@/base/progress-circle/progress-circle.vue'
 
 const transform = prefixStyle('transform')
 
@@ -101,11 +106,13 @@ export default {
   data() {
     return {
       songReady: false,
-      currentTime: 0
+      currentTime: 0,
+      radius: 32
     }
   },
   components: {
-    progressBar
+    progressBar,
+    progressCircle
   },
   computed: {
     percent() {
