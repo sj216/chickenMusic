@@ -31,7 +31,9 @@
           <div class="progress-wrapper">
             <span class="time time-l">{{format(currentTime)}}</span>
             <div class="progress-bar-wrapper">
-              <progress-bar :percent="percent"></progress-bar>
+              <progress-bar
+                @percentChange="onProgressBarChange"
+                :percent="percent"></progress-bar>
             </div>
             <div class="time time-r">{{format(currentSong.duration)}}</div>
           </div>
@@ -135,6 +137,13 @@ export default {
       setPlayingState: 'SET_PLAYING_STATE',
       setCurrentIndex: 'SET_CURRENT_INDEX'
     }),
+    // 来回推动时定位到歌曲应该播放到的位置
+    onProgressBarChange(percent) {
+      this.$refs.audio.currentTime = this.currentSong.duration * percent
+      if (!this.playing) { // 推动完成之后默认开始播放
+        this.setPlayingState(true)
+      }
+    },
     back() {
       // 将全屏关闭
       this.setFullScreen(false)
