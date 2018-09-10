@@ -64,7 +64,11 @@ export default {
     },
     // 点击实现对歌曲播放进度的控制
     progressClick(e) {
-      this._offset(e.offsetX)
+      // 这里当我们点击progressBtn时，e.offsetX获取不对
+      // this._offset(e.offsetX)
+      const rect = this.$refs.progressBar.getBoundingClientRect()
+      const offsetWidth = e.pageX - rect.left
+      this._offset(offsetWidth)
       this._triggerPercent()
     }
   },
