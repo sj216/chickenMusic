@@ -1,5 +1,6 @@
 import {getLyric} from '../../api/song'
 import {ERR_OK} from '../../api/config'
+import { Base64 } from 'js-base64'
 
 export default class Song { // 类的扩展性比对象好很多，面向对象的编程方式
   constructor({id, mid, singer, name, album, duration, image, url}) {
@@ -13,11 +14,20 @@ export default class Song { // 类的扩展性比对象好很多，面向对象�
     this.url = url
   }
   getLyric() {
-    getLyric(this.mid).then((res) => {
-      if (res.retcode === ERR_OK) {
-        this.lyric = res.lyric
-        console.log(this.lyric)
-      }
+    if (this.lyric) {
+      return Promise.resolve(this.lyric)
+    }
+    return new Promise((resolve, reject) => {
+      getLyric(this.mid).then((res) => {
+        if (res.retcode === ERR_OK) {
+          this.lyric = Base64.decode(res.lyric)
+          resolve(this.lyric)
+        } else {
+          // reject('noLyric')
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
     })
   }
 }
