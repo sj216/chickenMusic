@@ -1,3 +1,6 @@
+import {getLyric} from '../../api/song'
+import {ERR_OK} from '../../api/config'
+
 export default class Song { // 类的扩展性比对象好很多，面向对象的编程方式
   constructor({id, mid, singer, name, album, duration, image, url}) {
     this.id = id
@@ -8,6 +11,14 @@ export default class Song { // 类的扩展性比对象好很多，面向对象�
     this.duration = duration
     this.image = image
     this.url = url
+  }
+  getLyric() {
+    getLyric(this.mid).then((res) => {
+      if (res.retcode === ERR_OK) {
+        this.lyric = res.lyric
+        console.log(this.lyric)
+      }
+    })
   }
 }
 
@@ -20,7 +31,7 @@ export function createSong(musicData, songVkey, guid) {
     album: musicData.albumname,
     duration: musicData.interval,
     image: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid}.jpg?max_age=2592000`,
-    url: `http://dl.stream.qqmusic.qq.com/C400${musicData.songmid}.m4a?guid=406626400&vkey=826988541AEF582C89935D20888AEE5ACE6AAB179A5E9F488A0E2C5E9A61973E5F9A1A1FC4EF479497C55AC451376248062476873A8ED7D9&uin=0&fromtag=38`
+    url: `http://124.193.230.13/amobile.music.tc.qq.com/C400${musicData.songmid}.m4a?guid=406626400&vkey=C5E2E69B1AA8232C4DA0A65AE67407A62686DF35B6C9BE30BC737370786364E389A9271BBD15EB8291CB3FD149634F12CABC08EB724A18FC&uin=0&fromtag=38`
   })
 }
 
