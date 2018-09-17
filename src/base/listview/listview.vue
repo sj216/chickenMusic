@@ -141,6 +141,9 @@ export default {
       let achorIndex = parseInt(this.touch.achorIndex) + delta
       this._scrollTo(achorIndex)
     },
+    refresh() {
+      this.$refs.listview.refresh()
+    },
     scroll(pos) {
       // 实现实时监控scrollY的位置
       this.scrollY = pos.y
