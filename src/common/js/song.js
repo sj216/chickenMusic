@@ -1,6 +1,6 @@
 import {getLyric} from '../../api/song'
 import {ERR_OK} from '../../api/config'
-import { Base64 } from 'js-base64'
+import {Base64} from 'js-base64'
 
 export default class Song { // 类的扩展性比对象好很多，面向对象的编程方式
   constructor({id, mid, singer, name, album, duration, image, url}) {
@@ -13,6 +13,7 @@ export default class Song { // 类的扩展性比对象好很多，面向对象�
     this.image = image
     this.url = url
   }
+
   getLyric() {
     if (this.lyric) {
       return Promise.resolve(this.lyric)
@@ -41,7 +42,20 @@ export function createSong(musicData, songVkey, guid) {
     album: musicData.albumname,
     duration: musicData.interval,
     image: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid}.jpg?max_age=2592000`,
-    url: `http://124.193.230.13/amobile.music.tc.qq.com/C400${musicData.songmid}.m4a?guid=406626400&vkey=724797A39C699A7A07102952F5F6AD21BF60892EC285D1EB9DE03682832727F1E1DC27A324CBC26ACF0CC7F7FC33A7D1CA51B6FA5AF6CBA1&uin=0&fromtag=38`
+    url: `http://124.193.230.13/amobile.music.tc.qq.com/C400${musicData.mid}.m4a?guid=406626400&vkey=2E25D7F5121ABB40ACAFBC367FF4237408DC0B2185287D5B3030ED0B163EE140FBE731653A58A4E19788DC4DF75D0CF3CF3DBBBFC7CE7134&uin=0&fromtag=38`
+  })
+}
+
+export function createDisc(musicData, songVkey, guid) {
+  return new Song({
+    id: musicData.id,
+    mid: musicData.mid,
+    singer: filterSinger(musicData.singer),
+    name: musicData.name,
+    album: musicData.album.name,
+    duration: musicData.interval,
+    image: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.album.mid}.jpg?max_age=2592000`,
+    url: `http://124.193.230.13/amobile.music.tc.qq.com/C400${musicData.mid}.m4a?guid=406626400&vkey=2E25D7F5121ABB40ACAFBC367FF4237408DC0B2185287D5B3030ED0B163EE140FBE731653A58A4E19788DC4DF75D0CF3CF3DBBBFC7CE7134&uin=0&fromtag=38`
   })
 }
 
