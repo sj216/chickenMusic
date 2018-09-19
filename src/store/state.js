@@ -8,7 +8,8 @@ const state = {
   sequenceList: [], // 顺序列表
   mode: playMode.sequence, // 设置播放模式
   currentIndex: -1, // 当前播放歌曲的索引值
-  disc: {} // 定义一个歌单对象
+  disc: {}, // 定义一个歌单对象
+  topList: {} // 排行榜对象信息
 }
 
 export default state
