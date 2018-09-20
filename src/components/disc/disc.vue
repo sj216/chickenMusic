@@ -15,7 +15,7 @@ export default {
   name: 'disc',
   data() {
     return {
-      songs: []
+      songs: [],
     }
   },
   components: {

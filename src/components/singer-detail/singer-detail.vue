@@ -4,6 +4,7 @@
       :songs="songs"
       :title="title"
       :bg-image="bgImage"
+      :rank="rank"
     />
   </transition>
 </template>
@@ -18,7 +19,8 @@ import MusicList from '@/components/music-list/music-list'
 export default {
   data() {
     return {
-      songs: []
+      songs: [],
+      rank: true
     }
   },
   components: { MusicList },

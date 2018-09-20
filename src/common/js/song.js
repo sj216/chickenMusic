@@ -42,7 +42,7 @@ export function createSong(musicData, songVkey, guid) {
     album: musicData.albumname,
     duration: musicData.interval,
     image: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid}.jpg?max_age=2592000`,
-    url: `http://124.193.230.13/amobile.music.tc.qq.com/C400${musicData.songmid}.m4a?guid=406626400&vkey=2E25D7F5121ABB40ACAFBC367FF4237408DC0B2185287D5B3030ED0B163EE140FBE731653A58A4E19788DC4DF75D0CF3CF3DBBBFC7CE7134&uin=0&fromtag=38`
+    url: `http://124.193.230.21/amobile.music.tc.qq.com/C400${musicData.songmid}.m4a?guid=406626400&vkey=8DA00A40F16FB6F895E84DD0C5484B2B5B41D68C028D0540261312B4513B277086959D85FBBF682355FB94646055FD9439B3124F303B967C&uin=0&fromtag=38`
   })
 }
 
@@ -55,7 +55,7 @@ export function createDisc(musicData, songVkey, guid) {
     album: musicData.album.name,
     duration: musicData.interval,
     image: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.album.mid}.jpg?max_age=2592000`,
-    url: `http://124.193.230.13/amobile.music.tc.qq.com/C400${musicData.mid}.m4a?guid=406626400&vkey=2E25D7F5121ABB40ACAFBC367FF4237408DC0B2185287D5B3030ED0B163EE140FBE731653A58A4E19788DC4DF75D0CF3CF3DBBBFC7CE7134&uin=0&fromtag=38`
+    url: `http://124.193.230.21/amobile.music.tc.qq.com/C400${musicData.mid}.m4a?guid=406626400&vkey=8DA00A40F16FB6F895E84DD0C5484B2B5B41D68C028D0540261312B4513B277086959D85FBBF682355FB94646055FD9439B3124F303B967C&uin=0&fromtag=38`
   })
 }
 

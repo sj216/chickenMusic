@@ -23,6 +23,7 @@
       ref="list">
       <div class="song-list-wrapper">
         <song-list
+          :rank="rank"
           :songs="songs"
           @select="selectItem"
         />
@@ -62,6 +63,10 @@ export default {
     }
   },
   props: {
+    rank: {
+      type: Boolean,
+      default: false
+    },
     bgImage: {
       type: String,
       default: ''

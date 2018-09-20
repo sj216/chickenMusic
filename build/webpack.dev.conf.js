@@ -113,6 +113,20 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         }).catch((e) => {
           console.log(e)
         })
+      });
+      app.get('/api/getMusicList', (req, res) => {
+        var url = 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_toplist_cp.fcg'
+        axios.get(url, {
+          headers: {
+            referer: 'https://c.y.qq.com/',
+            host: 'c.y.qq.com'
+          },
+          params: req.query
+        }).then((response) => {
+          res.json(response.data)
+        }).catch((e) => {
+          console.log(e)
+        })
       })
     }
   },
