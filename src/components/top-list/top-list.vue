@@ -16,7 +16,7 @@ export default {
   data() {
     return {
       songs: [],
-      rank: 'rank'
+      rank: true
     }
   },
   components: {
