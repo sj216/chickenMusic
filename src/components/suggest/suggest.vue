@@ -1,12 +1,12 @@
 <template>
   <div class="suggest">
     <ul class="suggest-list">
-      <li class="suggest-item">
+      <li class="suggest-item" v-for="(item, index) in result" :key="index">
         <div class="icon">
-          <i></i>
+          <i :class="getIconCls(item)"></i>
         </div>
         <div class="name">
-          <p class="text"></p>
+          <p class="text" v-html="getDisplayName(item)"></p>
         </div>
       </li>
     </ul>
@@ -16,6 +16,7 @@
 <script>
 import {search} from '@/api/search'
 import {ERR_OK} from '@/api/config'
+import {createSong} from '@/common/js/song'
 
 const TYPE_SINGER = 'singer'
 
@@ -59,6 +60,36 @@ export default {
           ...data.zhida,
           ...{type: TYPE_SINGER}
         })
+      }
+      if (data.song) {
+        ret = ret.concat(this._normalizeSongs(data.song.list))
+      }
+      return ret
+    },
+    // 处理数据
+    _normalizeSongs(list) {
+      let ret = []
+      list.forEach((musicData) => {
+        if (musicData.songid && musicData.albumid) {
+          ret.push(createSong(musicData))
+        }
+      })
+      return ret
+    },
+    // 获取当前样式
+    getIconCls(item) {
+      if (item.type === TYPE_SINGER) {
+        return 'icon-mine'
+      } else {
+        return 'icon-music'
+      }
+    },
+    // 获取当前歌手名称
+    getDisplayName(item) {
+      if (item.type === TYPE_SINGER) {
+        return item.singername
+      } else {
+        return `${item.name}-${item.singer}`
       }
     }
   }
