@@ -38,7 +38,7 @@ export default {
       result: [],
       // 是否需要上拉刷新
       pullup: true,
-      hasMore: true
+      hasMore: false
     }
   },
   components: {
