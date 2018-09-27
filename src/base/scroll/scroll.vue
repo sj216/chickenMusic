@@ -28,6 +28,11 @@ export default {
     lisenScroll: {
       type: Boolean,
       default: false
+    },
+    // 上拉刷新
+    pullup: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -53,6 +58,14 @@ export default {
         let vm = this
         this.scroll.on('scroll', (pos) => {
           vm.$emit('scroll', pos)
+        })
+      }
+      // 上拉刷新
+      if (this.pullup) {
+        this.scroll.on('scrollEnd', () => {
+          if (this.scroll.y <= (this.scroll.maxScrollY + 50)) {
+            this.$emit('scrollToEnd') // 滚动到底部
+          }
         })
       }
     },

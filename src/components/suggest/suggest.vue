@@ -1,5 +1,9 @@
 <template>
-  <div class="suggest">
+  <scroll class="suggest"
+          :data="result"
+          @scrollToEnd="searchMore"
+          ref="suggest"
+          :pullup="pullup">
     <ul class="suggest-list">
       <li class="suggest-item" v-for="(item, index) in result" :key="index">
         <div class="icon">
@@ -9,24 +13,35 @@
           <p class="text" v-html="getDisplayName(item)"></p>
         </div>
       </li>
+      <loading v-show="hasMore" title=""/>
     </ul>
-  </div>
+  </scroll>
 </template>
 
 <script>
 import {search} from '@/api/search'
 import {ERR_OK} from '@/api/config'
 import {createSong} from '@/common/js/song'
+import Scroll from '@/base/scroll/scroll'
+import Loading from '@/base/loading/loading'
 
 const TYPE_SINGER = 'singer'
+const perpage = 20
 
 export default {
   name: 'suggest',
   data() {
     return {
       page: 1,
-      result: []
+      result: [],
+      // 是否需要上拉刷新
+      pullup: true,
+      hasMore: true
     }
+  },
+  components: {
+    Scroll,
+    Loading
   },
   props: {
     query: {
@@ -46,12 +61,38 @@ export default {
   methods: {
     // 请求服务端抓取检索数据，渲染到页面上
     search() {
-      search(this.query, this.page, this.showSinger).then((res) => {
+      // 每次改变输入框中的值第一次调用搜索接口， 将当前page置为1，且当前scroll组件滚动到顶部
+      this.page = 1
+      this.hasMore = true
+      this.$refs.suggest.scrollTo(0, 0)
+      search(this.query, this.page, this.showSinger, perpage).then((res) => {
         if (res.code === ERR_OK) {
           console.log(res.data)
           this.result = this._genResult(res.data)
+          this.checkMore(res.data)
         }
       })
+    },
+    // 上拉刷新派发事件--搜索更多
+    searchMore() {
+      if (!this.hasMore) {
+        return
+      }
+      this.page++
+      search(this.query, this.page, this.showSinger, perpage).then((res) => {
+        if (res.code === ERR_OK) {
+          console.log(res.data)
+          this.result = this.result.concat(this._genResult(res.data))
+          this.checkMore(res.data)
+        }
+      })
+    },
+    // 检测是否还有更多数据可加载
+    checkMore(data) {
+      const song = data.song
+      if (!song.list.length || (song.curnum + song.curpage * perpage) > song.totalnum) {
+        this.hasMore = false
+      }
     },
     _genResult(data) {
       let ret = []
