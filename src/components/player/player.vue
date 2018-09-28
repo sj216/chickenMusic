@@ -107,6 +107,7 @@
         </div>
       </div>
     </transition>
+    <playlist/>
     <audio :src="currentSong.url"
            @canplay="ready"
            @error="error"
@@ -126,6 +127,7 @@ import {playMode} from '../../common/js/config'
 import {shuffle} from '../../common/js/util'
 import Lyric from 'lyric-parser'
 import Scroll from '@/base/scroll/scroll.vue'
+import Playlist from '@/components/playlist/playlist'
 
 const transform = prefixStyle('transform')
 const transitionDuration = prefixStyle('transitionDuration')
@@ -146,7 +148,8 @@ export default {
   components: {
     progressBar,
     progressCircle,
-    Scroll
+    Scroll,
+    Playlist
   },
   created() {
     this.touch = {} // 在这里定义是因为这个touch并不需要添加get和set

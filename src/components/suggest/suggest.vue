@@ -25,7 +25,7 @@ import {createSong} from '@/common/js/song'
 import Scroll from '@/base/scroll/scroll'
 import Loading from '@/base/loading/loading'
 import Singer from '@/common/js/singer'
-import {mapMutations} from 'vuex'
+import {mapMutations, mapActions} from 'vuex'
 
 const TYPE_SINGER = 'singer'
 const perpage = 20
@@ -64,8 +64,12 @@ export default {
     ...mapMutations({
       setSinger: 'SET_SINGER'
     }),
+    ...mapActions([
+      'insertSoong'
+    ]),
     // 点击跳转二级路由
     selectItem(item) {
+      // 情况1:点击的是歌手
       if (item.type === TYPE_SINGER) {
         const singer = new Singer({
           id: item.singermid,
@@ -75,6 +79,9 @@ export default {
           path: `/search/${singer.id}`
         })
         this.setSinger(singer)
+        // 情况2:点击的是歌曲
+      } else {
+        this.insertSoong(item)
       }
     },
     // 请求服务端抓取检索数据，渲染到页面上
