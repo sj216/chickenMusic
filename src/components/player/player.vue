@@ -107,7 +107,7 @@
         </div>
       </div>
     </transition>
-    <playlist/>
+    <!--<playlist/>-->
     <audio :src="currentSong.url"
            @canplay="ready"
            @error="error"

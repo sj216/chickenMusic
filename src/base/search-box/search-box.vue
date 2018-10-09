@@ -1,12 +1,14 @@
 <template>
   <div class="search-box">
     <i class="icon-search"></i>
-    <input class="box" :placeholder="placeholder" v-model="query"/>
+    <input class="box" :placeholder="placeholder" v-model="query" ref="query"/>
     <i class="icon-dismiss" v-show="query" @click="clear"></i>
   </div>
 </template>
 
 <script>
+import {debounce} from '@/common/js/util'
+
 export default {
   name: 'search-box',
   data() {
@@ -15,9 +17,10 @@ export default {
     }
   },
   created() {
-    this.$watch('query', (newQuery) => {
+    // 实现截流函数的调用，避免在短时间内多次调用同一接口
+    this.$watch('query', debounce((newQuery) => {
       this.$emit('query', newQuery)
-    })
+    }, 200))
   },
   props: {
     placeholder: {
@@ -26,6 +29,10 @@ export default {
     }
   },
   methods: {
+    // 控制input框失去焦点
+    blur() {
+      this.$refs.query.blur()
+    },
     // 清空输入框中的内容
     clear() {
       this.query = ''

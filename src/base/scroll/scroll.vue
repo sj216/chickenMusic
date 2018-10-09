@@ -33,6 +33,11 @@ export default {
     pullup: {
       type: Boolean,
       default: false
+    },
+    // 避免在input获取焦点的时候调起原生键盘造成对页面的遮挡，无法进行列表的滚动
+    beforeScroll: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -66,6 +71,11 @@ export default {
           if (this.scroll.y <= (this.scroll.maxScrollY + 50)) {
             this.$emit('scrollToEnd') // 滚动到底部
           }
+        })
+      }
+      if (this.beforeScroll) {
+        this.scroll.on('beforeScrollStart', () => {
+          this.$emit('beforeScroll')
         })
       }
     },

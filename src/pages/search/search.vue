@@ -16,7 +16,9 @@
       </div>
     </div>
     <div class="search-result">
-      <suggest :query="query"/>
+      <suggest :query="query"
+               @search="saveSearch"
+               @listScroll="blurInput"/>
     </div>
     <router-view></router-view>
   </div>
@@ -27,6 +29,7 @@ import SearchBox from '@/base/search-box/search-box'
 import {getHotKey} from '@/api/search'
 import {ERR_OK} from '@/api/config'
 import Suggest from '@/components/suggest/suggest'
+import {mapActions} from 'vuex'
 
 export default {
   name: 'search',
@@ -44,6 +47,16 @@ export default {
     this._getHotKey()
   },
   methods: {
+    ...mapActions([
+      saveSearchHistory
+    ]),
+    // 保存搜索结果
+    saveSearch() {
+      this.saveSearchHistory(this.query)
+    },
+    blurInput() {
+      this.$refs.searchBox.blur()
+    },
     _getHotKey() {
       getHotKey().then((res) => {
         if (res.code === ERR_OK) {
@@ -112,4 +125,5 @@ export default {
     width: 100%
     top: 178px
     bottom: 0
+    left: 0
 </style>

@@ -3,6 +3,8 @@
           :data="result"
           @scrollToEnd="searchMore"
           ref="suggest"
+          :beforeScroll="beforeScroll"
+          @beforeScroll="listScroll"
           :pullup="pullup">
     <ul class="suggest-list">
       <li @click="selectItem(item)" class="suggest-item" v-for="(item, index) in result" :key="index">
@@ -13,8 +15,12 @@
           <p class="text" v-html="getDisplayName(item)"></p>
         </div>
       </li>
-      <loading v-show="hasMore" title=""/>
+      <loading v-show="hasMore && result.length" title=""/>
     </ul>
+    <!-- 没有结果的时候显示 -->
+    <div v-show="!result.length && !hasMore" class="no-result-wrapper">
+      <no-result title="抱歉，暂无搜索结果"></no-result>
+    </div>
   </scroll>
 </template>
 
@@ -25,6 +31,7 @@ import {createSong} from '@/common/js/song'
 import Scroll from '@/base/scroll/scroll'
 import Loading from '@/base/loading/loading'
 import Singer from '@/common/js/singer'
+import NoResult from '@/base/no-result/no-result'
 import {mapMutations, mapActions} from 'vuex'
 
 const TYPE_SINGER = 'singer'
@@ -38,12 +45,14 @@ export default {
       result: [],
       // 是否需要上拉刷新
       pullup: true,
-      hasMore: false
+      hasMore: true,
+      beforeScroll: true
     }
   },
   components: {
     Scroll,
-    Loading
+    Loading,
+    NoResult
   },
   props: {
     query: {
@@ -67,6 +76,9 @@ export default {
     ...mapActions([
       'insertSoong'
     ]),
+    listScroll() {
+      this.$emit('listScroll')
+    },
     // 点击跳转二级路由
     selectItem(item) {
       // 情况1:点击的是歌手
@@ -83,6 +95,7 @@ export default {
       } else {
         this.insertSoong(item)
       }
+      this.$emit('select')
     },
     // 请求服务端抓取检索数据，渲染到页面上
     search() {
