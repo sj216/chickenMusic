@@ -1,4 +1,5 @@
 import {playMode} from '@/common/js/config'
+import {loadSearch} from '@/common/js/cache'
 
 const state = {
   singer: {}, // 保存歌手信息
@@ -10,7 +11,7 @@ const state = {
   currentIndex: -1, // 当前播放歌曲的索引值
   disc: {}, // 定义一个歌单对象
   topList: {}, // 排行榜对象信息
-  searchHistory: []
+  searchHistory: loadSearch() // 从本地获取搜索数组的数据
 }
 
 export default state

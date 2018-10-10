@@ -12,10 +12,10 @@ function insertArray(arr, val, compare, maxLen) {
     return false
   } else if (index > 0) { // 如果找到这条数据，并且这条数据的位置不是第一条数据则进行处理
     arr.splice(index, 1) // 首先将原数组中的这条数据删除
-    arr.unshift(val) // 开头插入数据
-    if (maxLen && arr.length > maxLen) { // 如果数组设置了最大的长度限制而且我们的arr的长度是大于这个最大长度的，则将多余的数据从末尾删除
-      arr.pop()
-    }
+  }
+  arr.unshift(val) // 开头插入数据
+  if (maxLen && arr.length > maxLen) { // 如果数组设置了最大的长度限制而且我们的arr的长度是大于这个最大长度的，则将多余的数据从末尾删除
+    arr.pop()
   }
 }
 
@@ -26,4 +26,9 @@ export function saveSearch(query) {
   }, SEARCH_MAX_LENGTH)
   storage.set(SEARCH_KEY, searches)
   return searches
+}
+
+// 一个方法控制searchHistory的初始值
+export function loadSearch() {
+  return storage.get(SEARCH_KEY, [])
 }
