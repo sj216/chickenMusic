@@ -48,7 +48,7 @@ export default {
   },
   methods: {
     ...mapActions([
-      saveSearchHistory
+      'saveSearchHistory'
     ]),
     // 保存搜索结果
     saveSearch() {
