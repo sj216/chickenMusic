@@ -8,7 +8,10 @@
         <div class="hot-key">
           <h1 class="title">热门搜索</h1>
           <ul>
-            <li class="item" v-for="(item, index) in hotKey" :key="index" @click="addQuery(item.k)">
+            <li class="item"
+                v-for="(item, index) in hotKey"
+                @click.stop="addQuery(item.k)"
+                :key="index">
               <span>{{item.k}}</span>
             </li>
           </ul>
@@ -16,15 +19,18 @@
         <div class="search-history" v-show="searchHistory.length">
           <h1 class="title">
             <span class="text">搜索历史</span>
-            <span class="clear">
+            <span class="clear" @click="clearSearchHistory">
               <i class="icon-clear"></i>
             </span>
           </h1>
-          <search-list :searches="searchHistory"></search-list>
+          <search-list :searches="searchHistory"
+                       @delete="deleteSearchHistory"
+                       @select="addQuery">
+          </search-list>
         </div>
       </div>
     </div>
-    <div class="search-result">
+    <div class="search-result" v-show="query">
       <suggest :query="query"
                @select="saveSearch"
                @listScroll="blurInput"/>
@@ -64,7 +70,9 @@ export default {
   },
   methods: {
     ...mapActions([
-      'saveSearchHistory'
+      'saveSearchHistory',
+      'deleteSearchHistory',
+      'clearSearchHistory'
     ]),
     // 保存搜索结果
     saveSearch() {

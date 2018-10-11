@@ -1,9 +1,12 @@
 <template>
   <div class="search-list" v-show="searches.length">
     <ul>
-      <li class="search-item" v-for="(item,index) in searches" :key="index">
+      <li class="search-item"
+          v-for="(item,index) in searches"
+          @click="selectItem(item)"
+          :key="index">
         <span class="text">{{item}}</span>
-        <span class="icon">
+        <span class="icon" @click.stop="deleteOne(item)">
           <i class="icon-delete"></i>
         </span>
       </li>
@@ -20,6 +23,16 @@ export default {
       default: function() {
         return []
       }
+    }
+  },
+  methods: {
+    // 点击其中一项
+    selectItem(item) {
+      this.$emit('select', item)
+    },
+    // 删除其中一项
+    deleteOne(item) {
+      this.$emit('delete', item)
     }
   }
 }

@@ -19,6 +19,13 @@ function insertArray(arr, val, compare, maxLen) {
   }
 }
 
+function deleteFromArray(arr, compare) {
+  const index = arr.findIndex(compare)
+  if (index > -1) {
+    arr.splice(index, 1)
+  }
+}
+
 export function saveSearch(query) {
   let searches = storage.get(SEARCH_KEY, [])
   insertArray(searches, query, (item) => {
@@ -31,4 +38,21 @@ export function saveSearch(query) {
 // 一个方法控制searchHistory的初始值
 export function loadSearch() {
   return storage.get(SEARCH_KEY, [])
+}
+
+// 删除一条数据
+export function deleteSearch(query) {
+  // 先获取缓存中的search列表
+  let searches = storage.get(SEARCH_KEY, [])
+  deleteFromArray(searches, (item) => {
+    return item === query
+  })
+  storage.set(SEARCH_KEY, searches)
+  return searches
+}
+
+// 清除所有的搜索历史纪录
+export function clearSearch() {
+  storage.remove(SEARCH_KEY)
+  return []
 }
