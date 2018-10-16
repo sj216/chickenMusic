@@ -92,6 +92,32 @@ export const deleteSearchHistory = function ({commit}, query) {
 }
 
 // 删除所有的历史纪录
-export const clearSearchHistory = function({commit}) {
+export const clearSearchHistory = function ({commit}) {
   commit(types.SET_SEARCH_HISTORY, clearSearch())
+}
+
+// 删除播放列表中的其中一项
+export const deleteSong = function ({commit, state}, song) {
+  let playList = state.playList.slice() // 复制一个playist
+  let sequenceList = state.sequenceList.slice() // 返回一个副本
+  let currentIndex = state.currentIndex
+  let pIndex = findIndex(playList, song)
+  playList.splice(pIndex, 1)
+  let sIndex = findIndex(sequenceList, song)
+  sequenceList.splice(sIndex, 1)
+
+  if (currentIndex > pIndex || currentIndex === playList.length) {
+    currentIndex--
+  }
+
+  commit(types.SET_PLAY_LIST, playList)
+  commit(types.SET_SEQUENCE_LIST, sequenceList)
+  commit(types.SET_CURRENT_INDEX, currentIndex)
+
+  // 当已经把列表中的所有歌曲删完的时候，将播放状态置为false
+  if (!playList.length) {
+    commit(types.SET_PLAYING_STATE, false)
+  } else {
+    commit(types.SET_PLAYING_STATE, true)
+  }
 }

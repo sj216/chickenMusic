@@ -102,12 +102,12 @@
           </progress-circle>
         </div>
         <!-- 点开歌曲列表按钮 -->
-        <div class="control">
+        <div class="control" @click.stop="showPlayList">
           <i class="icon-playlist"></i>
         </div>
       </div>
     </transition>
-    <!--<playlist/>-->
+    <playlist ref="playList"/>
     <audio :src="currentSong.url"
            @canplay="ready"
            @error="error"
@@ -191,6 +191,10 @@ export default {
       setPlayMode: 'SET_PLAY_MODE',
       setPlayList: 'SET_PLAY_LIST'
     }),
+    // 展示歌曲列表
+    showPlayList() {
+      this.$refs.playList.show()
+    },
     middleTouchStart(e) {
       this.touch.initated = true
       const touch = e.touches[0]
@@ -449,6 +453,9 @@ export default {
   },
   watch: {
     currentSong(newSong, oldSong) {
+      if (!newSong.id) {
+        return
+      }
       if (newSong.id === oldSong.id) {
         return
       }
