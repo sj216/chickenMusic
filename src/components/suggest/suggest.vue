@@ -74,7 +74,7 @@ export default {
       setSinger: 'SET_SINGER'
     }),
     ...mapActions([
-      'insertSoong'
+      'insertSong'
     ]),
     refresh() {
       this.$refs.suggest.refresh()
@@ -96,7 +96,7 @@ export default {
         this.setSinger(singer)
         // 情况2:点击的是歌曲
       } else {
-        this.insertSoong(item)
+        this.insertSong(item)
       }
       this.$emit('select')
     },

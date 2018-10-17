@@ -33,7 +33,7 @@ export const randomPlay = function ({commit}, {list}) {
   commit(types.SET_PLAYING_STATE, true)
 }
 
-export const insertSoong = function ({commit, state}, song) {
+export const insertSong = function ({commit, state}, song) {
   let playList = state.playList.slice() // 复制一个playist
   let sequenceList = state.sequenceList.slice() // 返回一个副本
   let currentIndex = state.currentIndex
@@ -60,7 +60,7 @@ export const insertSoong = function ({commit, state}, song) {
   //  确定在sequenceList中需要插入的位置
   let currentSIndex = findIndex(sequenceList, currentSong) + 1
 
-  let fsIndex = findIndex(sequenceList, currentSong)
+  let fsIndex = findIndex(sequenceList, song)
 
   // 将song插入sequenceList中
   sequenceList.splice(currentSIndex, 0, song)
@@ -115,9 +115,14 @@ export const deleteSong = function ({commit, state}, song) {
   commit(types.SET_CURRENT_INDEX, currentIndex)
 
   // 当已经把列表中的所有歌曲删完的时候，将播放状态置为false
-  if (!playList.length) {
-    commit(types.SET_PLAYING_STATE, false)
-  } else {
-    commit(types.SET_PLAYING_STATE, true)
-  }
+  const playingState = playList.length > 0
+  commit(types.SET_PLAYING_STATE, playingState)
+}
+
+// 清空所有的播放列表
+export const deleteSongList = function({commit}) {
+  commit(types.SET_PLAY_LIST, [])
+  commit(types.SET_SEQUENCE_LIST, [])
+  commit(types.SET_CURRENT_INDEX, -1)
+  commit(types.SET_PLAYING_STATE, false)
 }
