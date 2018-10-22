@@ -4,6 +4,9 @@ import storage from 'good-storage'
 const SEARCH_KEY = '__search__'
 const SEARCH_MAX_LENGTH = 15
 
+const PLAY_KEY = '__PLAY__'
+const PLAY_MAX_LENGTH = 200
+
 // 查找数组中是否存已经存在一个值
 // compare 是一个function
 function insertArray(arr, val, compare, maxLen) {
@@ -55,4 +58,19 @@ export function deleteSearch(query) {
 export function clearSearch() {
   storage.remove(SEARCH_KEY)
   return []
+}
+
+// 保存一条播放历史记录
+export function savePlay(song) {
+  let songs = storage.get(PLAY_KEY, [])
+  insertArray(songs, song, (item) => {
+    return item.id === song.id
+  }, PLAY_MAX_LENGTH)
+  storage.set(PLAY_KEY, songs)
+  return songs
+}
+
+// 读取播放历史记录
+export function loadPlay() {
+  return storage.get(PLAY_KEY, [])
 }

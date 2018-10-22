@@ -24,7 +24,7 @@
           </transition-group>
         </scroll>
         <div class="list-operate">
-          <div class="add">
+          <div class="add" @click="addSong">
             <i class="icon-add"></i>
             <span class="text">添加歌曲到队列</span>
           </div>
@@ -34,6 +34,7 @@
         </div>
       </div>
       <Confirm ref="confirm" text="是否清空播放列表" confirmBtnText="清空" @confirm="confirmClear"/>
+      <AddSong ref="addSong"/>
     </div>
   </transition>
 </template>
@@ -44,6 +45,7 @@ import Scroll from '@/base/scroll/scroll'
 import {playMode} from '@/common/js/config'
 import Confirm from '@/base/confirm/confirm'
 import {playerMixin} from '../../common/js/mixin'
+import AddSong from '../../components/add-song/add-song'
 
 export default {
   name: 'playlist',
@@ -60,7 +62,8 @@ export default {
   mixins: [playerMixin],
   components: {
     Scroll,
-    Confirm
+    Confirm,
+    AddSong
   },
   watch: {
     currentSong(newSong, oldSong) {
@@ -75,6 +78,10 @@ export default {
       'deleteSong',
       'deleteSongList'
     ]),
+    // 将歌曲添加至播放列表
+    addSong() {
+      this.$refs.addSong.show()
+    },
     // 点击确认清空按钮
     confirmClear() {
       this.deleteSongList()
