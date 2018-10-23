@@ -1,6 +1,6 @@
 <template>
   <div class="search-list" v-show="searches.length">
-    <ul>
+    <transition-group name="list" tag="ul">
       <li class="search-item"
           v-for="(item,index) in searches"
           @click="selectItem(item)"
@@ -10,7 +10,7 @@
           <i class="icon-delete"></i>
         </span>
       </li>
-    </ul>
+    </transition-group>
   </div>
 </template>
 
@@ -45,6 +45,11 @@ export default {
       display: flex
       align-items: center
       height: 40px
+      overflow: hidden
+      &.list-enter-active,&.list-leave-active
+        transition: all 0.1s
+      &.list-enter,&.list-leave-to
+        height: 0
       .text
         flex: 1
         color: $color-text-l

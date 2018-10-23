@@ -9,6 +9,7 @@
       </div>
       <div class="search-box-wrapper">
         <search-box placeholder="搜索歌曲"
+                    ref="searchBox"
                     @query="onQueryChange"
         />
       </div>
@@ -17,9 +18,20 @@
                   @switch="switchItem"
                   :currentIndex="currentIndex"/>
         <div class="list-wrapper">
-          <Scroll v-if="currentIndex === 0" :data="playHistory" class="list-scroll">
+          <Scroll v-if="currentIndex === 0"
+                  ref="songList"
+                  :data="playHistory"
+                  class="list-scroll">
             <div class="list-inner">
-              <song-list :songs="playHistory"></song-list>
+              <song-list :songs="playHistory" @select="selectSong"></song-list>
+            </div>
+          </Scroll>
+          <Scroll class="list-scroll"
+                  ref="searchList"
+                  v-if="currentIndex === 1"
+                  :data="searchHistory">
+            <div class="list-inner">
+              <search-list @delete="deleteSearchHistory" @select="addQuery" :searches="searchHistory"></search-list>
             </div>
           </Scroll>
         </div>
@@ -31,18 +43,27 @@
                  @listScroll="blurInput"
         />
       </div>
+      <top-tip ref="topTip">
+        <div class="tip-title">
+          <i class="icon-ok"></i>
+          <span class="text">1首歌曲已经添加到播放队列</span>
+        </div>
+      </top-tip>
     </div>
   </transition>
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 import SearchBox from '../../base/search-box/search-box'
 import Suggest from '../../components/suggest/suggest'
 import {searchMixin} from '../../common/js/mixin'
 import Switches from '../../base/switches/switches'
 import Scroll from '../../base/scroll/scroll'
 import SongList from '../../base/song-list/song-list'
+import Song from '../../common/js/song'
+import SearchList from '../../base/search-list/search-list'
+import TopTip from '../../base/top-tip/top-tip'
 
 export default {
   name: 'add-song',
@@ -63,7 +84,9 @@ export default {
     Suggest,
     Switches,
     Scroll,
-    SongList
+    SongList,
+    SearchList,
+    TopTip
   },
   computed: {
     ...mapGetters([
@@ -71,14 +94,36 @@ export default {
     ])
   },
   methods: {
+    ...mapActions([
+      'insertSong'
+    ]),
+    // 将选中歌曲插入到当前歌曲列表
+    selectSong(song, index) {
+      if (index !== 0) {
+        this.insertSong(new Song(song))
+        this.showTip()
+      }
+    },
+    showTip() {
+      this.$refs.topTip.show()
+    },
     show() {
       this.showFlag = true
+      // 延迟20ms做一次刷新，确保高度能被正确计算
+      setTimeout(() => {
+        if (this.currentIndex === 0) {
+          this.$refs.songList.refresh()
+        } else {
+          this.$refs.searchList.refresh()
+        }
+      }, 20)
     },
     hide() {
       this.showFlag = false
     },
     selectSuggest() {
       this.saveSearch()
+      this.showTip()
     },
     switchItem(index) {
       this.currentIndex = index
