@@ -7,6 +7,9 @@ const SEARCH_MAX_LENGTH = 15
 const PLAY_KEY = '__PLAY__'
 const PLAY_MAX_LENGTH = 200
 
+const FAVORITE_KEY = '__favorite__'
+const FAVORITE_MAX_LENGTH = 200
+
 // 查找数组中是否存已经存在一个值
 // compare 是一个function
 function insertArray(arr, val, compare, maxLen) {
@@ -73,4 +76,29 @@ export function savePlay(song) {
 // 读取播放历史记录
 export function loadPlay() {
   return storage.get(PLAY_KEY, [])
+}
+
+// 保存收藏歌曲
+export function saveFavorite(song) {
+  let songs = storage.get(FAVORITE_KEY, [])
+  insertArray(songs, song, (item) => {
+    return song.id === item.id
+  }, FAVORITE_MAX_LENGTH)
+  storage.set(FAVORITE_KEY, songs)
+  return songs
+}
+
+// 删除收藏歌曲
+export function deleteFavorite(song) {
+  let songs = storage.get(FAVORITE_KEY, [])
+  deleteFromArray(songs, (item) => {
+    return song.id === item.id
+  })
+  storage.set(FAVORITE_KEY, songs)
+  return songs
+}
+
+// 初始时加载所有的favoriteList
+export function loadFavorite() {
+  return storage.get(FAVORITE_KEY, [])
 }
