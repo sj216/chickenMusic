@@ -1,24 +1,49 @@
 <template>
   <transition name="slide">
     <div class="user-center">
-      <div class="back">
+      <div class="back" @click="back">
         <i class="icon-back"></i>
       </div>
       <div class="switches-wrapper">
         <Switches :switches="switches" :currentIndex="currentIndex" @switch="switchItem"></Switches>
       </div>
-      <div ref="playBtn" class="play-btn">
+      <div ref="playBtn" class="play-btn" @click="random">
         <i class="icon-play"></i>
         <span class="text">随机播放全部</span>
       </div>
       <div class="list-wrapper" ref="listWrapper">
+        <Scroll v-if="currentIndex === 0"
+                ref="favoriteList"
+                :data="favoriteList"
+                class="list-scroll">
+          <div class="list-inner">
+            <song-list :songs="favoriteList" @select="selectSong"></song-list>
+          </div>
+        </Scroll>
+        <Scroll class="list-scroll"
+                ref="playHistory"
+                v-if="currentIndex === 1"
+                :data="playHistory">
+          <div class="list-inner">
+            <song-list :songs="playHistory" @select="selectSong"></song-list>
+          </div>
+        </Scroll>
+      </div>
+      <div class="no-result-wrapper" v-show="noResult">
+        <no-result :title="noResultDesc"></no-result>
       </div>
     </div>
   </transition>
 </template>
 
 <script>
+import {mapGetters, mapActions} from 'vuex'
 import Switches from '../../base/switches/switches'
+import SongList from '../../base/song-list/song-list'
+import Song from '../../common/js/song'
+import Scroll from '../../base/scroll/scroll'
+import {playListMixin} from '../../common/js/mixin'
+import NoResult from '../../base/no-result/no-result'
 
 export default {
   name: 'user-center',
@@ -31,12 +56,64 @@ export default {
       ]
     }
   },
+  mixins: [playListMixin],
   components: {
-    Switches
+    Switches,
+    SongList,
+    Scroll,
+    NoResult
+  },
+  computed: {
+    ...mapGetters([
+      'favoriteList',
+      'playHistory'
+    ]),
+    noResult() {
+      if (this.currentIndex === 0) {
+        return !this.favoriteList.length
+      } else {
+        return !this.playHistory.length
+      }
+    },
+    noResultDesc() {
+      if (this.currentIndex === 0) {
+        return '暂无收藏歌曲'
+      } else {
+        return '你还没有听过歌曲'
+      }
+    }
   },
   methods: {
+    ...mapActions([
+      'insertSong',
+      'randomPlay'
+    ]),
+    // 有歌曲播放的时候让出底部距离
+    handlePlayList(playList) {
+      const bottom = playList.length > 0 ? '60px' : ''
+      this.$refs.listWrapper.style.bottom = bottom
+
+      this.$refs.favoriteList && this.$refs.favoriteList.refresh()
+      this.$refs.playList && this.$refs.playList.refresh()
+    },
+    random() {
+      let list = this.currentIndex === 0 ? this.favoriteList : this.playHistory
+      if (list.length === 0) {
+        return
+      }
+      list = list.map((song) => {
+        return new Song(song)
+      })
+      this.randomPlay({list})
+    },
+    back() {
+      this.$router.back()
+    },
     switchItem(index) {
       this.currentIndex = index
+    },
+    selectSong(song) {
+      this.insertSong(new Song(song))
     }
   }
 }

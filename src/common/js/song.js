@@ -42,7 +42,7 @@ export function createSong(musicData, songVkey, guid) {
     album: musicData.albumname,
     duration: musicData.interval,
     image: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid}.jpg?max_age=2592000`,
-    url: `http://dl.stream.qqmusic.qq.com/C400${musicData.songmid}.m4a?guid=406626400&vkey=8430351881BEC74781469595ED9B102360A1911B4F5DD9FF582A30301DE54DCBB68EF48ED673EBC7402FAAC1AACD3A97A60FEE63AFDDDEC4&uin=0&fromtag=38`
+    url: `http://dl.stream.qqmusic.qq.com/C400${musicData.songmid}.m4a?guid=406626400&vkey=C992C3E898800B0B674F69E2FAAF14B9059B4587ED23AA8CFD8D8E10B056962E3374F27FE2243967994A4E049477D68CDDF1D01B59E858F1&uin=0&fromtag=38`
   })
 }
 
@@ -55,7 +55,7 @@ export function createDisc(musicData, songVkey, guid) {
     album: musicData.album.name,
     duration: musicData.interval,
     image: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.album.mid}.jpg?max_age=2592000`,
-    url: `http://dl.stream.qqmusic.qq.com/C400${musicData.mid}.m4a?guid=406626400&vkey=8430351881BEC74781469595ED9B102360A1911B4F5DD9FF582A30301DE54DCBB68EF48ED673EBC7402FAAC1AACD3A97A60FEE63AFDDDEC4&uin=0&fromtag=38`
+    url: `http://dl.stream.qqmusic.qq.com/C400${musicData.mid}.m4a?guid=406626400&vkey=C992C3E898800B0B674F69E2FAAF14B9059B4587ED23AA8CFD8D8E10B056962E3374F27FE2243967994A4E049477D68CDDF1D01B59E858F1&uin=0&fromtag=38`
   })
 }
 
